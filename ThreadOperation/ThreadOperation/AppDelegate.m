@@ -10,17 +10,6 @@
 
 @implementation AppDelegate
 
-//静态方法，获取一个单例线程队列对象
-+(NSOperationQueue *)sharedQueue
-{
-    if (queue) {
-        queue = [[[NSOperationQueue alloc] init] autorelease];   //创建线程队列
-        
-        [queue setMaxConcurrentOperationCount:2];                //设置线程队列允许同时执行的线程数量
-    }
-    return queue;
-}
-
 - (void)dealloc
 {
     [_window release];

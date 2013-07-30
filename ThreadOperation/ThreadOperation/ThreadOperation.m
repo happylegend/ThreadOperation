@@ -61,18 +61,42 @@
      第二步：创建线程队列NSOperationQueue对象
      第三步：创建线程类对象
      第四步：将线程类对象添加到线程队列中
+     
+     队列请求:
+     首先是建立NSOperationQueue和NSOperations。NSOperationQueue会建立一个线程管理器，每个加入到线程operation会有序的执行。
+     提供了一个对异步请求更加精准丰富的控制。
+     如，可以设置在队列中，同步请求的连接数。往队列里添加的请求实例数大于maxConcurrentOperationCount时，请求实例将被置为等待，
+     直到前面至少有一个请求完成并出列才被放到队列里执行。
+     也适用于当我们有多个请求需求按顺序执行的时候（可能是业务上的需要，也可能是软件上的调优），仅仅需要把maxConcurrentOperationCount设为“1”。
+     NSOperationQueue *queue = [NSOperationQueue new];
+     NSInvocationOperation *operation = [[NSInvocationOperation alloc];
+     initWithTarget:self
+     selector:@selector(doWork:)
+     object:someObject];
+     [queue addObject:operation];
+     [operation release];
+     使用NSOperationQueue的过程：
+     1.  建立一个NSOperationQueue的对象
+     2.  建立一个NSOperation的对象
+     3.  将operation加入到NSOperationQueue中
+     4.  release掉operation
+     
+     
      */
     
     //创建线程队列对象
     //一个应用程序最好只有一个线程队列对象，是单例模式
+    
+    NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];   //创建线程队列
+    [queue setMaxConcurrentOperationCount:2];                //设置线程队列允许同时执行的线程数量
     
     //创建线程对象
     MyDrinkOperation *myDrinkOperation = [[MyDrinkOperation alloc] init];   //创建喝水线程对象
     MyEatOperation *myEatOperation = [[MyEatOperation alloc] init];         //创建吃饭线程对象
     
     //将线程对象加入到队列中
-    [[AppDelegate sharedQueue] addOperation:myDrinkOperation];
-    [[AppDelegate sharedQueue] addOperation:myEatOperation];
+    [queue addOperation:myDrinkOperation];
+    [queue addOperation:myEatOperation];
     
     [myDrinkOperation release];
     myDrinkOperation = nil;
