@@ -26,7 +26,7 @@
       线程队列对象最好设计为一个单例，一个应用程序最好只有一个队列，用AppDelegate的静态方法来获取，或者是每一个窗体（viewController）只有一个
       一个NSOperationQueue 操作队列，就相当于一个线程管理器，我们可以理解为线程池，而非一个线程。因为你可以设置这个线程管理器内可以并行运行的的线程数量，让每一个线程运行一个任务等等。
       队列是同时执行这些操作的。幸运的是，如果你想要为队列限制同时只能运行几个操作，你可以使用NSOperationQueue的setMaxConcurrentOperationCount:方法。例如，[queue setMaxConcurrentOperationCount:2];
-      通过设置允许同时执行的线程数量，可以提高线程运行的效率
+      通过设置允许同时执行的线程数量，可以提高线程运行的效率。默认情况下是-1，也就是没有限制，同时运行队列中的全部操作。
  
  4.通过GCD，Grand Central Dispatch，它提供了一些新的特性，以及运行库来支持多核并行编程，它的关注点更高：如何在多个 cpu 上提升效率。
     在使用GCD 之前，先添加libsystem.dylib动态加载库，在头文件引入#import<dispatch/dispatch.h>，之后就可以程序中使用GCD了
