@@ -88,7 +88,7 @@
     //一个应用程序最好只有一个线程队列对象，是单例模式
     
     NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];   //创建线程队列
-    [queue setMaxConcurrentOperationCount:2];                //设置线程队列允许同时执行的线程数量
+    [queue setMaxConcurrentOperationCount:2];                //设置线程队列允许同时执行的线程数量，当设置为2的时候相当于每次从线程池中取两个线程来同时运行这两个任务
     
     //创建线程对象
     MyDrinkOperation *myDrinkOperation = [[MyDrinkOperation alloc] init];   //创建喝水线程对象
@@ -97,6 +97,23 @@
     //将线程对象加入到队列中
     [queue addOperation:myDrinkOperation];
     [queue addOperation:myEatOperation];
+    
+    
+    /*
+     上面的情况是，将喝水和吃饭的两个任务都同时添加到了到了队列中，那么就队列就运行两个线程，喝水和吃饭两个任务互不影响
+     如果这两个任务存在先后顺序，把水喝完了再吃饭，也即是第一个任务结束后再开始第二个任务，这样的话，该怎么处理呢？
+     我们通过设置依赖关系来分别添加这两个任务
+     
+     [queue addOperation:myDrinkOperation];
+     if ([queue operationCount] > 0)
+     {
+     NSOperation *beforeOperation = [[queue operations] lastObject];  //因为此时队列中只有一个喝水的任务，然后取得最后一个任务，这样总可以设置前一个任务是后一个任务的依赖
+     [myEatOperation addDependency:beforeOperation];                  //设置依赖
+     }
+     [queue addOperation:myEatOperation];
+     
+     */
+    
     
     [myDrinkOperation release];
     myDrinkOperation = nil;

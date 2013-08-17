@@ -16,13 +16,15 @@
  2.通过NSObject的performSelectorInBackground方法，创建一个后台线程
       常用方式是[self performSelectorInBackground:<#(SEL)#> withObject:<#(id)#>]
  
- 3.通过NSOperation 是一个抽象基类，我们必须使用它的子类。iOS 提供了两种默认实现：NSInvocationOperation 和 NSBlockOperation。
+ 3.通过NSOperation 是一个抽象基类，可以看做一个任务，我们必须使用它的子类。iOS 提供了两种默认实现：NSInvocationOperation 和 NSBlockOperation。
       NSOperation的使用方法：
       NSOperation对象就像java.lang.Runnable接口，就像java.lang.Runnable接口那样，NSOperation类也被设计为可扩展的，而且只有一个需要重写的方法。它就是－(void)main。使用NSOperation的最简单的方式就是把一个NSOperation对象加入到NSOperationQueue队列中，一旦这个对象被加入到队列，队列就开始处理这个对象，直到这个对象的所有操作完成。然后它被队列释放。
       所以使用方法就是，继承NSOperation，重写main方法。获得了一个自定义的线程类，然后创建该线程类的对象，将对象添加到一个NSOperationQueue队列中，让队列来管理这些线程对象。
       关于线程队列：
+      把NSOperationQueue看作一个线程池，可往线程池中添加操作（NSOperation）到队列中。线程池中的线程可看作消费者，从队列中取走操作，并执行它。
+      你可以设置线程池中只有一个线程，这样，各个操作就可以认为是近似的顺序执行了，由于线程的不确定的性，所以我们说是看做近似的顺序执行。
       线程队列对象最好设计为一个单例，一个应用程序最好只有一个队列，用AppDelegate的静态方法来获取，或者是每一个窗体（viewController）只有一个
-      一个NSOperationQueue 操作队列，就相当于一个线程管理器，而非一个线程。因为你可以设置这个线程管理器内可以并行运行的的线程数量等等。
+      一个NSOperationQueue 操作队列，就相当于一个线程管理器，我们可以理解为线程池，而非一个线程。因为你可以设置这个线程管理器内可以并行运行的的线程数量，让每一个线程运行一个任务等等。
       队列是同时执行这些操作的。幸运的是，如果你想要为队列限制同时只能运行几个操作，你可以使用NSOperationQueue的setMaxConcurrentOperationCount:方法。例如，[queue setMaxConcurrentOperationCount:2];
       通过设置允许同时执行的线程数量，可以提高线程运行的效率
  
